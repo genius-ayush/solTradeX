@@ -40,11 +40,15 @@ bot.start((ctx) => __awaiter(void 0, void 0, void 0, function* () {
     ]));
 }));
 bot.action("balance", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const userId = (_a = ctx.from) === null || _a === void 0 ? void 0 : _a.id;
-    if (userId)
+    const userId = ctx.from.id;
+    console.log(wallets);
+    for (let key in wallets) {
+        console.log(`${key} : ${wallets[key]}`);
+    }
+    console.log(userId);
+    if (!userId)
         return;
-    const wallet = wallets[userId];
+    const wallet = wallets[userId]; //problem is here 
     const balance = yield connection.getBalance(wallet.publicKey);
     yield ctx.reply(`💰 Balance: ${(balance / web3_js_1.LAMPORTS_PER_SOL).toFixed(2)} SOL`);
 }));
@@ -53,11 +57,11 @@ bot.action("send_sol", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         parse_mode: "Markdown"
     });
     bot.on("text", (ctx2) => __awaiter(void 0, void 0, void 0, function* () {
-        var _b;
+        var _a;
         try {
             const [address, amountStr] = ctx2.message.text.split(" ");
             const amount = parseFloat(amountStr);
-            const userId = (_b = ctx2.from) === null || _b === void 0 ? void 0 : _b.id;
+            const userId = (_a = ctx2.from) === null || _a === void 0 ? void 0 : _a.id;
             if (!userId)
                 return;
             const fromWallet = wallets[userId];

@@ -2,6 +2,7 @@ import { Markup, Telegraf } from "telegraf";
 import dotenv from "dotenv";
 import { Agent } from "https";
 import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
+import mongoose from "mongoose";
 
 dotenv.config();
 
@@ -38,21 +39,20 @@ bot.start(async(ctx) => {
           );
 }); 
 
-bot.action("balance" , async(ctx)=>{
-    const userId = ctx.from?.id ; 
+bot.action("balance", async (ctx) => {
+  const userId = ctx.from.id;
+  if (!userId)return;
 
-    if(userId)return ; 
+  const wallet = wallets[userId];//problem is here 
+  const balance = await connection.getBalance(wallet.publicKey);
+  await ctx.reply(
+    `💰 Balance: ${(balance / LAMPORTS_PER_SOL).toFixed(2)} SOL`
+  );
+});
 
-    const wallet = wallets[userId] ; 
-
-    const balance = await connection.getBalance(wallet.publicKey) ; 
-
-    await ctx.reply(
-        `💰 Balance: ${(balance / LAMPORTS_PER_SOL).toFixed(2)} SOL`
-    )
-})
 
 bot.action("send_sol", async (ctx) => {
+
     await ctx.reply("✍️ Enter recipient address and amount in this format:\n\n`address amount`", {
       parse_mode: "Markdown"
     });
@@ -83,3 +83,11 @@ bot.help((ctx) => ctx.reply("How can I assist you?"));
 bot.on("text", (ctx) => ctx.reply(`You said: ${ctx.message.text}`));
 
 bot.launch();
+
+mongoose.connect(process.env.MONGO_SECRET! , {
+  dbName:'bonkbot'
+}).then(()=>{
+  console.log('Connected to Db')
+}).catch(err=>{
+  console.error(`Error connecting Db ${err}`)
+})
