@@ -6,10 +6,9 @@ import { Connection, Keypair } from "@solana/web3.js";
 import mongoose from "mongoose";
 import { bot } from "./bot/bot";
 
-export const connection = new Connection(process.env.RPC_URL!)
+export const connection = new Connection(process.env.RPC_URL!);
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
@@ -35,26 +34,15 @@ app.post("/webhook", (req, res) => {
   res.status(200).send("OK");
 });
 
-// Set webhook for production
+// Set webhook for production (Vercel)
 if (process.env.NODE_ENV === "production") {
   const webhookUrl = `${process.env.VERCEL_URL}/webhook`;
   bot.telegram.setWebhook(webhookUrl);
   console.log(`Webhook set to: ${webhookUrl}`);
 }
 
-async function bootstrap() {
-  await connectDB();
-  
-  if (process.env.NODE_ENV === "production") {
-    // For production, start Express server
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  } else {
-    // For development, use polling
-    await bot.launch();
-    console.log('Bot is running in development mode');
-  }
-}
+connectDB();
 
-bootstrap();
+// ❌ Don’t call app.listen()
+// ✅ Just export for Vercel
+export default app;

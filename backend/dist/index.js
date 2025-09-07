@@ -15,26 +15,41 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.connection = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
+const express_1 = __importDefault(require("express"));
 const web3_js_1 = require("@solana/web3.js");
 const mongoose_1 = __importDefault(require("mongoose"));
 const bot_1 = require("./bot/bot");
 exports.connection = new web3_js_1.Connection(process.env.RPC_URL);
+const app = (0, express_1.default)();
+// Middleware
+app.use(express_1.default.json());
 function connectDB() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield mongoose_1.default.connect(process.env.MONGO_SECRET, { dbName: "bonkbot" });
-            console.log(" Connected to DB");
+            console.log("Connected to DB");
         }
         catch (err) {
-            console.error(" DB Connection Error:", err);
+            console.error("DB Connection Error:", err);
         }
     });
 }
-function bootstrap() {
-    return __awaiter(this, void 0, void 0, function* () {
-        yield connectDB();
-        yield bot_1.bot.launch();
-        console.log('bot is running');
-    });
+// Health check endpoint
+app.get("/", (req, res) => {
+    res.json({ status: "Bot is running", timestamp: new Date().toISOString() });
+});
+// Webhook endpoint for Telegram
+app.post("/webhook", (req, res) => {
+    bot_1.bot.handleUpdate(req.body);
+    res.status(200).send("OK");
+});
+// Set webhook for production (Vercel)
+if (process.env.NODE_ENV === "production") {
+    const webhookUrl = `${process.env.VERCEL_URL}/webhook`;
+    bot_1.bot.telegram.setWebhook(webhookUrl);
+    console.log(`Webhook set to: ${webhookUrl}`);
 }
-bootstrap();
+connectDB();
+// ❌ Don’t call app.listen()
+// ✅ Just export for Vercel
+exports.default = app;
