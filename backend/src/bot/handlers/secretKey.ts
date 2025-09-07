@@ -1,6 +1,7 @@
 import { Markup } from "telegraf";
 import { User } from "../../db";
-import { bot } from "..";
+import { bot } from "../..";
+// import { bot } from "..";
 
 bot.action("secretKey" , async(ctx)=>{
 

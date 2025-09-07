@@ -12,16 +12,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.connection = void 0;
+exports.bot = exports.connection = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const express_1 = __importDefault(require("express"));
 const web3_js_1 = require("@solana/web3.js");
 const mongoose_1 = __importDefault(require("mongoose"));
-const bot_1 = require("./bot");
+// import { bot } from "./bot";
 exports.connection = new web3_js_1.Connection(process.env.RPC_URL);
 const app = (0, express_1.default)();
-const PORT = process.env.PORT || 3000;
 app.use(express_1.default.json());
 function connectDB() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -34,12 +33,29 @@ function connectDB() {
         }
     });
 }
+const telegraf_1 = require("telegraf");
+const https_1 = require("https");
+console.log(process.env.BOT_TOKEN);
+exports.bot = new telegraf_1.Telegraf(process.env.BOT_TOKEN, {
+    telegram: {
+        agent: new https_1.Agent({ family: 4 })
+    }
+});
+console.log("Bot initialized successfully");
+require("./bot/handlers/back");
+require("./bot/handlers/balance");
+require("./bot/handlers/fund");
+require("./bot/handlers/help");
+require("./bot/handlers/secretKey");
+require("./bot/handlers/send");
+require("./bot/handlers/start");
+require("./bot/handlers/wallet");
 app.get("/", (req, res) => {
     res.send("bot is running on /webhook");
 });
 app.post("/webhook", (req, res) => {
     console.log(req.body);
-    bot_1.bot.handleUpdate(req.body);
+    exports.bot.handleUpdate(req.body);
     res.status(200).send("OK");
 });
 // Set webhook for production

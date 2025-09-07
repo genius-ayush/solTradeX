@@ -2,14 +2,13 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
-import { Connection, Keypair } from "@solana/web3.js";
+import { Connection } from "@solana/web3.js";
 import mongoose from "mongoose";
-import { bot } from "./bot";
+// import { bot } from "./bot";
 
 export const connection = new Connection(process.env.RPC_URL!)
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
@@ -22,6 +21,27 @@ async function connectDB() {
     console.error("DB Connection Error:", err);
   }
 }
+
+import { Telegraf } from "telegraf";
+import { Agent } from "https";
+console.log(process.env.BOT_TOKEN)
+export const bot = new Telegraf(process.env.BOT_TOKEN as string, {
+    telegram: {
+      agent: new Agent({ family: 4 }) 
+    }
+});
+
+console.log("Bot initialized successfully");
+
+import './bot/handlers/back' ; 
+import './bot/handlers/balance' ;
+import './bot/handlers/fund' ; 
+import './bot/handlers/help' ; 
+import './bot/handlers/secretKey' ; 
+import './bot/handlers/send' ; 
+import './bot/handlers/start' ; 
+import './bot/handlers/wallet' ; 
+ 
 
 
 app.get("/", (req, res) => {

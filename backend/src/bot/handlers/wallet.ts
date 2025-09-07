@@ -1,7 +1,7 @@
 import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { User } from "../../db";
-import { bot } from "..";
-import { connection } from "../..";
+// import { bot } from "..";
+import { bot, connection } from "../..";
 import { Markup } from "telegraf";
 
 bot.action("wallet" , async(ctx)=>{

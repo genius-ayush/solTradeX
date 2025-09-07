@@ -1,8 +1,9 @@
-import { bot } from "..";
+// import { bot } from "..";
 import { Markup } from "telegraf";
 import { Keypair } from "@solana/web3.js";
 import { User } from "../../db";
 import bs58 from 'bs58'
+import { bot } from "../..";
 
 
 bot.start(async (ctx) => {
