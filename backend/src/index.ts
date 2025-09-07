@@ -26,7 +26,8 @@ app.get("/", (req, res) => {
 
 app.post("/webhook", (req, res) => {
   console.log(req.body);
-  bot.handleUpdate(req.body);
+  const work = bot.handleUpdate(req.body);
+  console.log(work) ; 
   res.status(200).send("OK");
 });
 
