@@ -21,7 +21,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const bot_1 = require("./bot/bot");
 exports.connection = new web3_js_1.Connection(process.env.RPC_URL);
 const app = (0, express_1.default)();
-// Middleware
+const PORT = process.env.PORT || 3000;
 app.use(express_1.default.json());
 function connectDB() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -34,22 +34,40 @@ function connectDB() {
         }
     });
 }
-// Health check endpoint
 app.get("/", (req, res) => {
-    res.json({ status: "Bot is running", timestamp: new Date().toISOString() });
+    res.send("bot is running on /webhook");
 });
-// Webhook endpoint for Telegram
 app.post("/webhook", (req, res) => {
+    console.log(req.body);
     bot_1.bot.handleUpdate(req.body);
     res.status(200).send("OK");
 });
-// Set webhook for production (Vercel)
-if (process.env.NODE_ENV === "production") {
-    const webhookUrl = `${process.env.VERCEL_URL}/webhook`;
-    bot_1.bot.telegram.setWebhook(webhookUrl);
-    console.log(`Webhook set to: ${webhookUrl}`);
+// Set webhook for production
+// if (process.env.NODE_ENV === "production") {
+//   const webhookUrl = `${process.env.VERCEL_URL}/webhook`;
+//   bot.telegram.setWebhook(webhookUrl);
+//   console.log(`Webhook set to: ${webhookUrl}`);
+// }
+// async function bootstrap() {
+//   await connectDB();
+//   if (process.env.NODE_ENV === "production") {
+//     // For production, start Express server
+//     app.listen(PORT, () => {
+//       console.log(`Server running on port ${PORT}`);
+//     });
+//   } else {
+//     // For development, use polling
+//     await bot.launch();
+//     console.log('Bot is running in development mode');
+//   }
+// }
+function bootstrap() {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield connectDB();
+        yield bot_1.bot.launch();
+    });
 }
-connectDB();
-// ❌ Don’t call app.listen()
-// ✅ Just export for Vercel
-exports.default = app;
+bootstrap();
+app.listen(3000, () => {
+    console.log(`Example app listening on port 3000`);
+});
