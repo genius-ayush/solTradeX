@@ -16,6 +16,7 @@ const telegraf_1 = require("telegraf");
 const __2 = require("..");
 __2.bot.action("balance", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
+    console.log("reched to balance");
     try {
         const userId = (_a = ctx.from) === null || _a === void 0 ? void 0 : _a.id;
         if (!userId) {

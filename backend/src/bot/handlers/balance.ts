@@ -5,6 +5,8 @@ import { Markup } from "telegraf";
 import { bot } from "..";
 
 bot.action("balance", async (ctx) => {
+
+  console.log("reched to balance") ; 
   try {
     const userId = ctx.from?.id;
     if (!userId) {
