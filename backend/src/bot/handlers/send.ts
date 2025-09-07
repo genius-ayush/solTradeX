@@ -1,6 +1,6 @@
 // instead of sendAndConfirmTransaction
 import { Keypair, PublicKey, SystemProgram, Transaction } from "@solana/web3.js";
-import { connection, wallets } from "../..";
+import { connection } from "../..";
 import { bot } from "../bot";
 import { User } from "../../db";
 import bs58 from 'bs58'

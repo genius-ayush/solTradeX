@@ -1,5 +1,4 @@
 import { bot } from "../bot";
-import { wallets } from "../..";
 import { Markup } from "telegraf";
 import { Keypair } from "@solana/web3.js";
 import { User } from "../../db";
