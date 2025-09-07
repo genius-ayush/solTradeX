@@ -1,44 +1,30 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import express from "express";
 import { Connection } from "@solana/web3.js";
 import mongoose from "mongoose";
 import { bot } from "./bot";
 
 export const connection = new Connection(process.env.RPC_URL!);
 
-const app = express();
-app.use(express.json());
-
 async function connectDB() {
-  try {
+  if (mongoose.connection.readyState === 0) {
     await mongoose.connect(process.env.MONGO_SECRET!, { dbName: "bonkbot" });
     console.log("Connected to DB");
-  } catch (err) {
-    console.error("DB Connection Error:", err);
   }
 }
+connectDB();
 
-app.get("/", (req, res) => {
-  res.send("bot is running on /webhook");
-});
+export default async function handler(req: any, res: any) {
+  if (req.method === "GET") {
+    return res.status(200).send("bot is running on /webhook");
+  }
 
-app.post("/webhook", (req, res) => {
-  console.log(req.body);
-  const work = bot.handleUpdate(req.body);
-  console.log(work) ; 
-  res.status(200).send("OK");
-});
+  if (req.method === "POST" && req.url.endsWith("/webhook")) {
+    console.log("Incoming Telegram update:", req.body);
+    await bot.handleUpdate(req.body);
+    return res.status(200).send("OK");
+  }
 
-async function bootstrap() {
-  await connectDB();
+  return res.status(404).send("Not Found");
 }
-bootstrap();
-
-// ✅ Vercel needs a handler function
-const handler = (req: any, res: any) => {
-  app(req, res); // delegate to express
-};
-
-export default handler;

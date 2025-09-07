@@ -15,41 +15,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.connection = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const express_1 = __importDefault(require("express"));
 const web3_js_1 = require("@solana/web3.js");
 const mongoose_1 = __importDefault(require("mongoose"));
 const bot_1 = require("./bot");
 exports.connection = new web3_js_1.Connection(process.env.RPC_URL);
-const app = (0, express_1.default)();
-app.use(express_1.default.json());
 function connectDB() {
     return __awaiter(this, void 0, void 0, function* () {
-        try {
+        if (mongoose_1.default.connection.readyState === 0) {
             yield mongoose_1.default.connect(process.env.MONGO_SECRET, { dbName: "bonkbot" });
             console.log("Connected to DB");
         }
-        catch (err) {
-            console.error("DB Connection Error:", err);
-        }
     });
 }
-app.get("/", (req, res) => {
-    res.send("bot is running on /webhook");
-});
-app.post("/webhook", (req, res) => {
-    console.log(req.body);
-    const work = bot_1.bot.handleUpdate(req.body);
-    console.log(work);
-    res.status(200).send("OK");
-});
-function bootstrap() {
+connectDB();
+function handler(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield connectDB();
+        if (req.method === "GET") {
+            return res.status(200).send("bot is running on /webhook");
+        }
+        if (req.method === "POST" && req.url.endsWith("/webhook")) {
+            console.log("Incoming Telegram update:", req.body);
+            yield bot_1.bot.handleUpdate(req.body);
+            return res.status(200).send("OK");
+        }
+        return res.status(404).send("Not Found");
     });
 }
-bootstrap();
-// ✅ Vercel needs a handler function
-const handler = (req, res) => {
-    app(req, res); // delegate to express
-};
 exports.default = handler;
