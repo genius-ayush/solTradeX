@@ -4,7 +4,7 @@ dotenv.config();
 import express from "express";
 import { Connection, Keypair } from "@solana/web3.js";
 import mongoose from "mongoose";
-import { bot } from "./bot/bot";
+import { bot } from "./bot";
 
 export const connection = new Connection(process.env.RPC_URL!)
 

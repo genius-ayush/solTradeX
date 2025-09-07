@@ -1,5 +1,5 @@
 import { Markup } from "telegraf";
-import { bot } from "../bot";
+import { bot } from "..";
 
 bot.action("back" , async(ctx)=>{
     

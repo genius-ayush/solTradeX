@@ -1,6 +1,6 @@
 import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { User } from "../../db";
-import { bot } from "../bot";
+import { bot } from "..";
 import { connection } from "../..";
 import { Markup } from "telegraf";
 

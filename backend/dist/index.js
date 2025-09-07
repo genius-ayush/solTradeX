@@ -18,7 +18,7 @@ dotenv_1.default.config();
 const express_1 = __importDefault(require("express"));
 const web3_js_1 = require("@solana/web3.js");
 const mongoose_1 = __importDefault(require("mongoose"));
-const bot_1 = require("./bot/bot");
+const bot_1 = require("./bot");
 exports.connection = new web3_js_1.Connection(process.env.RPC_URL);
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
@@ -64,7 +64,7 @@ app.post("/webhook", (req, res) => {
 function bootstrap() {
     return __awaiter(this, void 0, void 0, function* () {
         yield connectDB();
-        yield bot_1.bot.launch();
+        // await bot.launch() ; 
     });
 }
 bootstrap();
