@@ -6,68 +6,38 @@ import { Connection } from "@solana/web3.js";
 import mongoose from "mongoose";
 import { bot } from "./bot";
 
-export const connection = new Connection(process.env.RPC_URL!)
+export const connection = new Connection(process.env.RPC_URL!);
 
 const app = express();
-
 app.use(express.json());
 
 async function connectDB() {
   try {
-    await mongoose.connect(process.env.MONGO_SECRET!, { dbName: "bonkbot" }); 
+    await mongoose.connect(process.env.MONGO_SECRET!, { dbName: "bonkbot" });
     console.log("Connected to DB");
-  }
-  catch (err) {
+  } catch (err) {
     console.error("DB Connection Error:", err);
   }
 }
 
-
 app.get("/", (req, res) => {
-  res.send("bot is running on /webhook") ; 
+  res.send("bot is running on /webhook");
 });
 
-
 app.post("/webhook", (req, res) => {
-  console.log(req.body) ; 
+  console.log(req.body);
   bot.handleUpdate(req.body);
   res.status(200).send("OK");
 });
 
-// Set webhook for production
-// if (process.env.NODE_ENV === "production") {
-//   const webhookUrl = `${process.env.VERCEL_URL}/webhook`;
-//   bot.telegram.setWebhook(webhookUrl);
-//   console.log(`Webhook set to: ${webhookUrl}`);
-// }
-
-// async function bootstrap() {
-//   await connectDB();
-  
-//   if (process.env.NODE_ENV === "production") {
-//     // For production, start Express server
-//     app.listen(PORT, () => {
-//       console.log(`Server running on port ${PORT}`);
-//     });
-//   } else {
-//     // For development, use polling
-//     await bot.launch();
-//     console.log('Bot is running in development mode');
-//   }
-// }
-
-
-
-async function bootstrap(){
-  await connectDB() ; 
-  // await bot.launch() ; 
+async function bootstrap() {
+  await connectDB();
 }
-
 bootstrap();
 
+// ✅ Vercel needs a handler function
+const handler = (req: any, res: any) => {
+  app(req, res); // delegate to express
+};
 
-app.listen(3000, () => {
-  console.log(`Example app listening on port 3000`)
-})
-
-export default app ; 
+export default handler;
