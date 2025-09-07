@@ -7,5 +7,14 @@ export const bot = new Telegraf(process.env.BOT_TOKEN as string, {
     }
 });
 
+import "./handlers/start";
+import "./handlers/help";
+import "./handlers/send";
+import "./handlers/balance";
+import "./handlers/fund";
+import "./handlers/wallet";
+import "./handlers/back";
+import "./handlers/secretKey";
+
 console.log("Bot initialized successfully");
  
