@@ -12,6 +12,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 import { Button } from '../ui/button';
+import ThemeButton from '../ui/themebutton';
 
 function Header() {
   const [open, setOpen] = useState(false);
@@ -19,7 +20,7 @@ function Header() {
 
   return (
 
-    <nav className="flex w-full items-center justify-between  border-b border-neutral-200 px-4 py-4 dark:border-neutral-800 ">
+    <nav className="flex w-full items-center justify-between  border-b border-neutral-400/80 dark:border-neutral-800/80  px-4 py-4 ">
       <div className="flex items-center  gap-2">
         <Bot className='w-8 h-8 mb-1' />
         <h1 className="text-base font-bold md:text-2xl">SOLBOT</h1>
@@ -30,22 +31,25 @@ function Header() {
         <div className='hover:text-gray-500'>Features</div>
         <div className='hover:text-gray-500'>Contact</div>
       </div>
-      <button className=" transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5   dark:bg-white dark:text-black  hidden md:block text-md light:bg-gradient-to-b from-gray-800 to-black  shadow-md hover:opacity-90 ">
+      <div className='lg:flex gap-4 hidden '>
+      <ThemeButton/>
+      <button className=" transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5   dark:bg-white dark:text-black   text-md light:bg-gradient-to-b from-gray-800 to-black  shadow-md hover:opacity-90 ">
         START TRADING
       </button>
+      </div>
 
 
       <Drawer direction='top' >
         <DrawerTrigger asChild>
           {
-            open ? (<X onClick={() => setOpen(!open)} className='md:hidden' />) : (<Menu className='md:hidden' onClick={() => !open} />)
+            open ? (<X onClick={() => setOpen(!open)} className='md:hidden' />) : (<Menu className='lg:hidden' onClick={() => !open} />)
           }
         </DrawerTrigger>
         <DrawerContent>
 
           <div className="mx-auto w-full max-w-sm">
 
-            <div className='border-b'>
+            <div className='border-b   border-neutral-400/80 dark:bg-neutral-800/80'>
               <DrawerHeader className='font-mono'>
 
 
@@ -69,7 +73,7 @@ function Header() {
                 <div className='hover:text-gray-500 text-2xl mb-3'>Home</div>
                 <div className='hover:text-gray-500 text-2xl mb-3'>Features</div>
                 <div className='hover:text-gray-500 text-2xl'>Contact</div>
-
+                <ThemeButton/>
 
               </div>
 

@@ -2,7 +2,7 @@ import React from 'react'
 
 function Features() {
   return (
-    <section className="relative w-full min-h-screen flex items-center justify-center bg-gradient-to-t from-[#0a0a0a] via-[#141414] to-[#161616]">
+    <section className="relative w-full min-h-screen flex items-center justify-center ">
       {/* Glassy background overlay */}
       {/* <div className="absolute inset-0 bg-black/40 backdrop-blur-lg"></div> */}
 
